@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <ckeditor v-model="editorData" @ready="customHandler" :config="editorConfig"></ckeditor>
+    <div v-text="editorData"></div>
+</div>
+<script src="/node_modules/vue/dist/vue.js"></script>
+<script src="/node_modules/ckeditor4/ckeditor.js"></script>
+<script src="/node_modules/ckeditor4-vue/dist/ckeditor.js"></script>
+<script>
+    var mathElements = [
+        'math',
+        'maction',
+        'maligngroup',
+        'malignmark',
+        'menclose',
+        'merror',
+        'mfenced',
+        'mfrac',
+        'mglyph',
+        'mi',
+        'mlabeledtr',
+        'mlongdiv',
+        'mmultiscripts',
+        'mn',
+        'mo',
+        'mover',
+        'mpadded',
+        'mphantom',
+        'mroot',
+        'mrow',
+        'ms',
+        'mscarries',
+        'mscarry',
+        'msgroup',
+        'msline',
+        'mspace',
+        'msqrt',
+        'msrow',
+        'mstack',
+        'mstyle',
+        'msub',
+        'msup',
+        'msubsup',
+        'mtable',
+        'mtd',
+        'mtext',
+        'mtr',
+        'munder',
+        'munderover',
+        'semantics',
+        'annotation',
+        'annotation-xml'
+    ];
+    CKEDITOR.plugins.addExternal('ckeditor_wiris', '/ckeditor/plugins/ckeditor_wiris/', 'plugin.js');
+
+    CKEDITOR.replace('editor1', {
+        extraPlugins: 'ckeditor_wiris',
+        // For now, MathType is incompatible with CKEditor file upload plugins.
+        // removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser',
+        height: 320,
+        // Update the ACF configuration with MathML syntax.
+        extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+    });
+
+    Vue.use(CKEditor);
+    const app = new Vue({
+        el: '#app',
+        data: {
+            editorData: "",
+            editorConfig: {
+                extraPlugins: ['ckeditor_wiris', 'autogrow',
+                    'colorbutton,font,justify,print,tableresize,uploadimage,uploadfile,pastefromword,liststyle,pagebreak'
+                ],
+                autoGrow_minHeight: 200,
+                autoGrow_maxHeight: 600,
+                autoGrow_bottomSpace: 50,
+                removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser',
+                extraAllowedContent: mathElements.join(' ') +
+                    '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)',
+                toolbar: [{
+                    name: 'clipboard',
+                    items: ['PasteFromWord', '-', 'Undo', 'Redo']
+                },
+                    {
+                        name: 'basicstyles',
+                        items: ['Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat', 'Subscript',
+                            'Superscript'
+                        ]
+                    },
+                    {
+                        name: 'links',
+                        items: ['Link', 'Unlink']
+                    },
+                    {
+                        name: 'paragraph',
+                        items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
+                            'Blockquote'
+                        ]
+                    },
+                    {
+                        name: 'insert',
+                        items: ['Image', 'Table']
+                    },
+                    {
+                        name: 'editing',
+                        items: ['Scayt']
+                    },
+                    '/',
+
+                    {
+                        name: 'styles',
+                        items: ['Format', 'Font', 'FontSize']
+                    },
+                    {
+                        name: 'colors',
+                        items: ['TextColor', 'BGColor', 'CopyFormatting']
+                    },
+                    {
+                        name: 'align',
+                        items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']
+                    },
+                    {
+                        name: 'document',
+                        items: ['Print', 'PageBreak', 'Source']
+                    }, {
+                        name: 'wiris',
+                        items: ['ckeditor_wiris_formulaEditor',
+                            'ckeditor_wiris_formulaEditorChemistry'
+                        ]
+                    }
+                ],
+                stylesSet: [
+                    /* Inline Styles */
+                    {
+                        name: 'Marker',
+                        element: 'span',
+                        attributes: {
+                            'class': 'marker'
+                        }
+                    },
+                    {
+                        name: 'Cited Work',
+                        element: 'cite'
+                    },
+                    {
+                        name: 'Inline Quotation',
+                        element: 'q'
+                    },
+
+                    /* Object Styles */
+                    {
+                        name: 'Special Container',
+                        element: 'div',
+                        styles: {
+                            padding: '5px 10px',
+                            background: '#eee',
+                            border: '1px solid #ccc'
+                        }
+                    },
+                    {
+                        name: 'Compact table',
+                        element: 'table',
+                        attributes: {
+                            cellpadding: '5',
+                            cellspacing: '0',
+                            border: '1',
+                            bordercolor: '#ccc'
+                        },
+                        styles: {
+                            'border-collapse': 'collapse'
+                        }
+                    },
+                    {
+                        name: 'Borderless Table',
+                        element: 'table',
+                        styles: {
+                            'border-style': 'hidden',
+                            'background-color': '#E6E6FA'
+                        }
+                    },
+                    {
+                        name: 'Square Bulleted List',
+                        element: 'ul',
+                        styles: {
+                            'list-style-type': 'square'
+                        }
+                    }
+                ],
+
+            }
+        },
+        methods: {
+            customHandler: function (event) {
+                this.editorData = `
+                    <p>
+                       <p>①某班视力652365较好的同学；②方程<math xmlns="http://www.w3.org/1998/Math/MathML"><mi xmlns="http://www.w3.org/1998/Math/MathML" mathvariant="bold-italic">x</mi><mo xmlns="http://www.w3.org/1998/Math/MathML" >=</mo><mfrac xmlns="http://www.w3.org/1998/Math/MathML" ><mrow><mo>-</mo><mi mathvariant="bold-italic">b</mi><mo>&#177;</mo><msqrt><msup><mrow><mi mathvariant="bold-italic">b</mi></mrow><mrow><mn>2</mn></mrow></msup><mo>-</mo><mn>4</mn><mi mathvariant="bold-italic">a</mi><mi mathvariant="bold-italic">c</mi></msqrt></mrow><mrow><mn>2</mn><mi mathvariant="bold-italic">a</mi></mrow></mfrac></math>＝0的解；③<math xmlns="http://www.w3.org/1998/Math/MathML"><mrow xmlns="http://www.w3.org/1998/Math/MathML" ><mrow><mi mathvariant="normal">cos</mi></mrow><mo>&#8289;</mo><mrow><mi>&#945;</mi></mrow></mrow><mo xmlns="http://www.w3.org/1998/Math/MathML" >+</mo><mrow xmlns="http://www.w3.org/1998/Math/MathML" ><mrow><mi mathvariant="normal">cos</mi></mrow><mo>&#8289;</mo><mrow><mi>&#946;</mi></mrow></mrow><mo xmlns="http://www.w3.org/1998/Math/MathML" >=</mo><mn xmlns="http://www.w3.org/1998/Math/MathML" >2</mn><mrow xmlns="http://www.w3.org/1998/Math/MathML" ><mrow><mi mathvariant="normal">cos</mi></mrow><mo>&#8289;</mo><mrow><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><mfenced separators="|"><mrow><mi>&#945;</mi><mo>+</mo><mi>&#946;</mi></mrow></mfenced></mrow></mrow><mrow xmlns="http://www.w3.org/1998/Math/MathML" ><mrow><mi mathvariant="normal">cos</mi></mrow><mo>&#8289;</mo><mrow><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><mfenced separators="|"><mrow><mi>&#945;</mi><mo>-</mo><mi>&#946;</mi></mrow></mfenced></mrow></mrow></math>；④空气中密度大的气体．其中能组成集合的是(　　)<br /> <img src="https://wwd.yangguangedu.online/05c8b31a-1139-4b8f-be93-00bc77aad5f6.png" style="height:197px; width:216px" /><br /> A. ②</p> <p>B. <math xmlns="http://www.w3.org/1998/Math/MathML"><mi xmlns="http://www.w3.org/1998/Math/MathML" >x</mi><mo xmlns="http://www.w3.org/1998/Math/MathML" >=</mo><mfrac xmlns="http://www.w3.org/1998/Math/MathML" ><mrow><mo>-</mo><mi>b</mi><mo>&#177;</mo><msqrt><msup><mrow><mi>b</mi></mrow><mrow><mn>2</mn></mrow></msup><mo>-</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></math></p> <p>C. ②④<br /> D. <math xmlns="http://www.w3.org/1998/Math/MathML"><mi xmlns="http://www.w3.org/1998/Math/MathML" >f</mi><mfenced xmlns="http://www.w3.org/1998/Math/MathML" separators="|"><mrow><mi>x</mi></mrow></mfenced><mo xmlns="http://www.w3.org/1998/Math/MathML" >=</mo><msub xmlns="http://www.w3.org/1998/Math/MathML" ><mrow><mi>a</mi></mrow><mrow><mn>0</mn></mrow></msub><mo xmlns="http://www.w3.org/1998/Math/MathML" >+</mo><mrow xmlns="http://www.w3.org/1998/Math/MathML" ><msubsup><mo stretchy="true">&#8721;</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>&#8734;</mi></mrow></msubsup><mrow><mfenced separators="|"><mrow><msub><mrow><mi>a</mi></mrow><mrow><mi>n</mi></mrow></msub><mrow><mrow><mi mathvariant="normal">cos</mi></mrow><mo>&#8289;</mo><mrow><mfrac><mrow><mi>n</mi><mi>&#960;</mi><mi>x</mi></mrow><mrow><mi>L</mi></mrow></mfrac></mrow></mrow><mo>+</mo><msub><mrow><mi>b</mi></mrow><mrow><mi>n</mi></mrow></msub><mrow><mrow><mi mathvariant="normal">sin</mi></mrow><mo>&#8289;</mo><mrow><mfrac><mrow><mi>n</mi><mi>&#960;</mi><mi>x</mi></mrow><mrow><mi>L</mi></mrow></mfrac></mrow></mrow></mrow></mfenced></mrow></mrow></math></p>
+                    </p>
+                    `
+            }
+        }
+    })
+</script>
+</body>
+</html>
