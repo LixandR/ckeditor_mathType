@@ -36,7 +36,7 @@
     "url-loader": "^1.1.1",
     "uglifyjs-webpack-plugin": "^1.2.8",
     "webpack": "^4.17.2",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.3.12"
   },
   "main": "wirisplugin-generic.src.js",
   "dependencies": {
